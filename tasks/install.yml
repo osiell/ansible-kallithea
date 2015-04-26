@@ -1,0 +1,41 @@
+---
+
+- name: Install required tools
+  apt:  pkg={{ item }}
+        state=installed
+        update_cache=yes
+  with_items: kallithea_required_tools
+  tags:
+    - kallithea_install_required_tools
+
+- name: Add Kallithea system user
+  user: name={{ kallithea_user }} shell=/bin/bash
+        system=yes
+  tags:
+    - kallithea_install_user
+
+- name: Create repositories directory
+  file: path={{ kallithea_repodir }} state=directory
+        owner={{ kallithea_user }}
+        group={{ kallithea_user }}
+  tags:
+    - kallithea_install_repodir
+
+- name: Create log directory
+  file: path={{ kallithea_logdir }} state=directory
+        owner=root group={{ kallithea_user }}
+        mode=770 force=no
+  tags:
+    - kallithea_install_logdir
+
+# Some issues encountered when installing kallithea directly
+- name: virtualenv - install six at first
+  sudo_user: "{{ kallithea_user }}"
+  pip:  name=six
+        virtualenv={{ kallithea_venv }}
+
+- name: virtualenv - install kallithea
+  sudo_user: "{{ kallithea_user }}"
+  pip:  name=kallithea
+        version={{ kallithea_version }}
+        virtualenv={{ kallithea_venv }}

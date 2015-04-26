@@ -1,0 +1,11 @@
+---
+
+- name: Install logrotate
+  apt:  pkg=logrotate
+
+- name: Configure logrotate
+  template: src=logrotate.j2
+            dest=/etc/logrotate.d/{{ kallithea_service_name }}
+            owner=root group=root mode=0644
+            backup=no
+  when: kallithea_logrotate == True

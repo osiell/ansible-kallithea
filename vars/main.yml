@@ -1,0 +1,7 @@
+---
+
+kallithea_required_tools:
+    - python-virtualenv
+    - python-pip
+    - python-dev
+    - sudo

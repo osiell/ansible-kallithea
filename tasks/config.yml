@@ -1,0 +1,12 @@
+---
+
+- name: Setup configuration file
+  sudo_user: "{{ kallithea_user }}"
+  template: src=kallithea-{{ kallithea_version }}.ini.j2 dest={{ kallithea_config_file }}
+        backup=yes
+  notify: Restart Kallithea
+
+- name: Setup database
+  sudo_user: "{{ kallithea_user }}"
+  command: "{{ kallithea_venv }}/bin/paster setup-db {{ kallithea_config_file }} --user={{ kallithea_admin_user }} --password={{ kallithea_admin_password }} --email={{ kallithea_admin_email }} --repos={{ kallithea_repos_path }} --force-yes"
+  when: kallithea_db_init

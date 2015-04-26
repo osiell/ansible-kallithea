@@ -1,0 +1,7 @@
+---
+
+- name: Restart Kallithea
+  service:
+    name: "{{ kallithea_service_name }}"
+    state: restarted
+  when: kallithea_service_init == True

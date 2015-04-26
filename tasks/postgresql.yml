@@ -1,0 +1,61 @@
+---
+
+- name: PostgreSQL - Install required tools
+  apt: pkg={{ item }}
+        state=installed
+  with_items:
+    - postgresql-server-dev-all
+
+- name: virtualenv - Install psycopg2
+  sudo_user: "{{ kallithea_user }}"
+  pip:  name={{ item }}
+        virtualenv={{ kallithea_venv }}
+  with_items:
+    - psycopg2
+
+- name: Remote PostgreSQL - Add user
+  delegate_to: "{{ kallithea_db_host }}"
+  remote_user: "{{ kallithea_db_host_user }}"
+  sudo: yes
+  sudo_user: postgres
+  postgresql_user: name={{ kallithea_db_user }}
+                   role_attr_flags=CREATEDB,NOSUPERUSER
+  when: kallithea_db_host not in [False, 'localhost', '127.0.0.1']
+
+- name: Local PostgreSQL - Add user
+  sudo_user: postgres
+  postgresql_user: name={{ kallithea_db_user }}
+                   role_attr_flags=CREATEDB,NOSUPERUSER
+  when: kallithea_db_host in [False, 'localhost', '127.0.0.1']
+
+- name: Remote PostgreSQL - Set user password
+  delegate_to: "{{ kallithea_db_host }}"
+  remote_user: "{{ kallithea_db_host_user }}"
+  sudo: yes
+  sudo_user: postgres
+  postgresql_user: name={{ kallithea_db_user }}
+                   password={{ kallithea_db_passwd }}
+  when: kallithea_db_host not in [False, 'localhost', '127.0.0.1']
+        and kallithea_db_passwd is defined and kallithea_db_passwd
+
+- name: Local PostgreSQL - Set user password
+  sudo_user: postgres
+  postgresql_user: name={{ kallithea_db_user }}
+                   password={{ kallithea_db_passwd }}
+  when: kallithea_db_host in [False, 'localhost', '127.0.0.1']
+        and kallithea_db_passwd is defined and kallithea_db_passwd
+
+- name: Remote PostgreSQL - Create database
+  delegate_to: "{{ kallithea_db_host }}"
+  remote_user: "{{ kallithea_db_host_user }}"
+  sudo: yes
+  sudo_user: postgres
+  postgresql_db:    name={{ kallithea_db_name }}
+                    owner={{ kallithea_db_user }}
+  when: kallithea_db_host not in [False, 'localhost', '127.0.0.1']
+
+- name: Local PostgreSQL - Create database
+  sudo_user: postgres
+  postgresql_db:    name={{ kallithea_db_name }}
+                    owner={{ kallithea_db_user }}
+  when: kallithea_db_host in [False, 'localhost', '127.0.0.1']

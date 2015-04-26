@@ -1,0 +1,3 @@
+{{ kallithea_logdir }}/*.log {
+    {{ kallithea_logrotate_options | join('\n    ') }}
+}
