@@ -3,7 +3,8 @@
 - name: Setup configuration file
   sudo_user: "{{ kallithea_user }}"
   template: src=kallithea-{{ kallithea_version }}.ini.j2 dest={{ kallithea_config_file }}
-        backup=yes
+            mode=640
+            backup=yes
   notify: Restart Kallithea
 
 - name: Setup database
