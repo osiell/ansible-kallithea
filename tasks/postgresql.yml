@@ -5,6 +5,7 @@
         state=installed
   with_items:
     - postgresql-server-dev-all
+    - python-psycopg2
 
 - name: virtualenv - Install psycopg2
   sudo_user: "{{ kallithea_user }}"
