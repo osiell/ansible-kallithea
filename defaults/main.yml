@@ -1,7 +1,7 @@
 ---
 
 kallithea_user: kallithea
-kallithea_version: 0.2.1
+kallithea_version: 0.3
 kallithea_workdir: "/home/{{ kallithea_user }}"
 kallithea_logdir: "/var/log/kallithea"
 kallithea_repodir: "{{ kallithea_workdir }}/repos"
@@ -48,7 +48,7 @@ kallithea_config_api_access_controllers_whitelist: ''
 kallithea_config_default_encoding: utf8
 kallithea_config_bugtracker: ''
 kallithea_config_issue_pat: '(?:\s*#)(\d+)'
-kallithea_config_issue_server_link: 'https://myissueserver.com/{repo}/issue/{id}'
+kallithea_config_issue_server_link: 'https://issues.example.com/{repo}/issue/{id}'
 kallithea_config_issue_prefix: '#'
 kallithea_config_instance_id: ''
 kallithea_config_auth_ret_code: ''

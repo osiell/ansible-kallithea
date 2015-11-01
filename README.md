@@ -78,7 +78,7 @@ ansible-playbook playbook.yml -i inventory -e "kallithea_db_init=True"
 
 ```yaml
 kallithea_user: kallithea
-kallithea_version: 0.2.1
+kallithea_version: 0.3
 kallithea_workdir: "/home/{{ kallithea_user }}"
 kallithea_logdir: "/var/log/kallithea"
 kallithea_repodir: "{{ kallithea_workdir }}/repos"
