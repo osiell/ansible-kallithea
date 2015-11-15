@@ -1,7 +1,7 @@
 ---
 
 kallithea_required_tools:
-    - python-virtualenv
+    - "{{ ((ansible_distribution == 'Debian' and ansible_lsb.major_release|int < 8) or (ansible_distribution == 'Ubuntu' and ansible_lsb.major_release|int < 15)) and 'python-virtualenv' or 'virtualenv' }}"
     - python-pip
     - python-dev
     - sudo
