@@ -1,0 +1,26 @@
+---
+
+galaxy_info:
+  author: Sébastien Alix
+  company: OSIELL
+  description: Ansible role to install Kallithea and configure it.
+  license: GPLv3
+  min_ansible_version: 1.8
+  platforms:
+    - name: Debian
+      versions:
+        - wheezy
+        - jessie
+    - name: Ubuntu
+      versions:
+        - precise
+        - trusty
+  categories:
+    - hg
+    - mercurial
+    - git
+    - development
+    - system
+    - web
+
+dependencies: []
