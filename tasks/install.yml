@@ -4,7 +4,7 @@
   apt:  pkg={{ item }}
         state=installed
         update_cache=yes
-  with_items: kallithea_required_tools
+  with_items: "{{ kallithea_required_tools }}"
   tags:
     - kallithea_install_required_tools
 
@@ -30,12 +30,12 @@
 
 # Some issues encountered when installing kallithea directly
 - name: virtualenv - install six at first
-  sudo_user: "{{ kallithea_user }}"
+  become_user: "{{ kallithea_user }}"
   pip:  name=six
         virtualenv={{ kallithea_venv }}
 
 - name: virtualenv - install kallithea
-  sudo_user: "{{ kallithea_user }}"
+  become_user: "{{ kallithea_user }}"
   pip:  name=kallithea
         version={{ kallithea_version }}
         virtualenv={{ kallithea_venv }}
