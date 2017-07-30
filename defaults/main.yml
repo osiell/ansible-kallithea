@@ -1,7 +1,7 @@
 ---
 
 kallithea_user: kallithea
-kallithea_version: 0.3
+kallithea_version: 0.3.3
 kallithea_workdir: "/home/{{ kallithea_user }}"
 kallithea_logdir: "/var/log/kallithea"
 kallithea_repodir: "{{ kallithea_workdir }}/repos"
@@ -24,7 +24,7 @@ kallithea_db_user: "{{ kallithea_user }}"
 kallithea_db_passwd: password
 
 # Kallithea configuration
-kallithea_config_waitress_threads: 5
+kallithea_config_waitress_threads: 1
 kallithea_config_host: 0.0.0.0
 kallithea_config_port: 5000
 kallithea_config_lang: ''   # cs de fr hu ja nl_BE pl pt_BR ru sk zh_CN zh_TW
