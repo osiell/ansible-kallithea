@@ -14,49 +14,27 @@
   with_items:
     - psycopg2
 
-- name: Remote PostgreSQL - Add user
-  delegate_to: "{{ kallithea_db_host }}"
-  remote_user: "{{ kallithea_db_host_user }}"
+- name: Delegate PostgreSQL tasks to the relevant host
+  set_fact:
+    kallithea_postgresql_delegate_to: "{{ kallithea_db_host if ((kallithea_db_host|bool) != False) else inventory_hostname }}"
+    kallithea_postgresql_remote_user: "{{ kallithea_db_host_user if ((kallithea_db_host|bool) != False) else ansible_user }}"
+
+- block:
+
+    - name: PostgreSQL - Add user
+      postgresql_user: name={{ kallithea_db_user }}
+                       role_attr_flags=CREATEDB,NOSUPERUSER
+
+    - name: PostgreSQL - Set user password
+      postgresql_user: name={{ kallithea_db_user }}
+                       password={{ kallithea_db_passwd }}
+      when: kallithea_db_passwd is defined and kallithea_db_passwd
+
+    - name: PostgreSQL - Create database
+      postgresql_db:    name={{ kallithea_db_name }}
+                        owner={{ kallithea_db_user }}
+
+  delegate_to: "{{ kallithea_postgresql_delegate_to }}"
+  remote_user: "{{ kallithea_postgresql_remote_user }}"
   become: yes
   become_user: postgres
-  postgresql_user: name={{ kallithea_db_user }}
-                   role_attr_flags=CREATEDB,NOSUPERUSER
-  when: kallithea_db_host not in [False, 'localhost', '127.0.0.1']
-
-- name: Local PostgreSQL - Add user
-  become_user: postgres
-  postgresql_user: name={{ kallithea_db_user }}
-                   role_attr_flags=CREATEDB,NOSUPERUSER
-  when: kallithea_db_host in [False, 'localhost', '127.0.0.1']
-
-- name: Remote PostgreSQL - Set user password
-  delegate_to: "{{ kallithea_db_host }}"
-  remote_user: "{{ kallithea_db_host_user }}"
-  become: yes
-  become_user: postgres
-  postgresql_user: name={{ kallithea_db_user }}
-                   password={{ kallithea_db_passwd }}
-  when: kallithea_db_host not in [False, 'localhost', '127.0.0.1']
-        and kallithea_db_passwd is defined and kallithea_db_passwd
-
-- name: Local PostgreSQL - Set user password
-  become_user: postgres
-  postgresql_user: name={{ kallithea_db_user }}
-                   password={{ kallithea_db_passwd }}
-  when: kallithea_db_host in [False, 'localhost', '127.0.0.1']
-        and kallithea_db_passwd is defined and kallithea_db_passwd
-
-- name: Remote PostgreSQL - Create database
-  delegate_to: "{{ kallithea_db_host }}"
-  remote_user: "{{ kallithea_db_host_user }}"
-  become: yes
-  become_user: postgres
-  postgresql_db:    name={{ kallithea_db_name }}
-                    owner={{ kallithea_db_user }}
-  when: kallithea_db_host not in [False, 'localhost', '127.0.0.1']
-
-- name: Local PostgreSQL - Create database
-  become_user: postgres
-  postgresql_db:    name={{ kallithea_db_name }}
-                    owner={{ kallithea_db_user }}
-  when: kallithea_db_host in [False, 'localhost', '127.0.0.1']
