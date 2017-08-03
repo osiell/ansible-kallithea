@@ -39,3 +39,20 @@
   pip:  name=kallithea
         version={{ kallithea_version }}
         virtualenv={{ kallithea_venv }}
+
+- name: Set the 'kallithea_config_sqlalchemy_db1_url' variable from options
+  set_fact:
+    kallithea_config_sqlalchemy_db1_url: |
+        {% set vars = {'result': 'sqlite'} %}
+        {% for item in kallithea_config_options %}
+            {% for option in item.options %}
+                {% if option.option == 'sqlalchemy.db1.url' %}
+                    {% if vars.update({'result': option.value}) %}{% endif %}
+                {% endif %}
+            {% endfor %}
+        {% endfor %}
+        {{ vars['result'] }}
+
+- name: Cleanup the 'kallithea_config_sqlalchemy_db1_url' value
+  set_fact:
+    kallithea_config_sqlalchemy_db1_url: "{{ kallithea_config_sqlalchemy_db1_url.strip() }}"

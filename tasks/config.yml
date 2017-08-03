@@ -1,13 +1,27 @@
 ---
 
-- name: Setup configuration file
-  become_user: "{{ kallithea_user }}"
-  template: src=kallithea-{{ kallithea_version }}.ini.j2 dest={{ kallithea_config_file }}
-            mode=640
-            backup=yes
-  notify: Restart Kallithea
+- block:
 
-- name: Setup database
+    - name: Generate the configuration file
+      command: "{{ kallithea_venv }}/bin/paster make-config {{ kallithea_config_file }}"
+      args:
+        creates: "{{ kallithea_config_file }}"
+
+    - name: Configure Kallithea
+      ini_file:
+        path: "{{ kallithea_config_file }}"
+        section: "{{ item.0.section }}"
+        option: "{{ item.1.option }}"
+        value: "{{ item.1.value }}"
+        backup: yes
+      with_subelements:
+        - "{{ kallithea_config_options }}"
+        - options
+      notify: Restart Kallithea
+
+    - name: Setup database
+      command: "{{ kallithea_venv }}/bin/paster setup-db {{ kallithea_config_file }} --user={{ kallithea_admin_user }} --password={{ kallithea_admin_password }} --email={{ kallithea_admin_email }} --repos={{ kallithea_repos_path }} --force-yes"
+      when: kallithea_db_init
+
+  become: yes
   become_user: "{{ kallithea_user }}"
-  command: "{{ kallithea_venv }}/bin/paster setup-db {{ kallithea_config_file }} --user={{ kallithea_admin_user }} --password={{ kallithea_admin_password }} --email={{ kallithea_admin_email }} --repos={{ kallithea_repos_path }} --force-yes"
-  when: kallithea_db_init
