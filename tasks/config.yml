@@ -3,7 +3,7 @@
 - block:
 
     - name: Generate the configuration file
-      command: "{{ kallithea_venv }}/bin/paster make-config {{ kallithea_config_file }}"
+      command: "{{ kallithea_venv }}/bin/paster make-config Kallithea {{ kallithea_config_file }}"
       args:
         creates: "{{ kallithea_config_file }}"
 
