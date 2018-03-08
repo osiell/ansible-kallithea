@@ -1,27 +1,27 @@
 ---
 
-- include: install.yml
+- include_tasks: install.yml
   tags:
     - kallithea
     - kallithea_install
 
-- include: postgresql.yml
+- include_tasks: postgresql.yml
   when: kallithea_config_sqlalchemy_db1_url.startswith('postgresql')
   tags:
     - kallithea
     - kallithea_postgresql
 
-- include: config.yml
+- include_tasks: config.yml
   tags:
     - kallithea
     - kallithea_config
 
-- include: logrotate.yml
+- include_tasks: logrotate.yml
   tags:
     - kallithea
     - kallithea_logrotate
 
-- include: service.yml
+- include_tasks: service.yml
   tags:
     - kallithea
     - kallithea_service
