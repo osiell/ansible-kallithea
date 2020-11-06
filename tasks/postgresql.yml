@@ -2,7 +2,7 @@
 
 - name: PostgreSQL - Install required tools
   apt: pkg={{ item }}
-        state=installed
+        state=present
   with_items:
     - postgresql-server-dev-all
     - python-psycopg2
